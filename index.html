@@ -1,1 +1,122 @@
 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Royal Games</title>
+  <style>
+    body {
+      background: #181c2f;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #121628;
+      padding: 20px 0;
+      text-align: center;
+      border-bottom: 2px solid #00c3ff;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #00c3ff;
+      letter-spacing: 2px;
+    }
+    nav {
+      margin: 20px 0;
+      text-align: center;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 20px;
+      margin: 0 10px;
+      border-radius: 5px;
+      background: #23284a;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background: #00c3ff;
+      color: #181c2f;
+    }
+    .games-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px 20px;
+    }
+    .game-card {
+      background: #23284a;
+      border-radius: 12px;
+      width: 240px;
+      padding: 20px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .game-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(0,195,255,0.2);
+    }
+    .game-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .game-card h3 {
+      margin: 10px 0 6px 0;
+      font-size: 1.2em;
+      color: #00c3ff;
+    }
+    .game-card p {
+      font-size: 0.95em;
+      color: #bfc6e0;
+    }
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      padding: 15px 0;
+      background: #121628;
+      color: #bfc6e0;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Royal Games</h1>
+  </header>
+  <nav>
+    <a href="#">Início</a>
+    <a href="#">Jogos</a>
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+  </nav>
+  <section class="games-grid">
+    <div class="game-card">
+      <img src="https://via.placeholder.com/120?text=Jogo+1" alt="Jogo 1">
+      <h3>Jogo da Memória</h3>
+      <p>Teste sua memória encontrando os pares de cartas!</p>
+    </div>
+    <div class="game-card">
+      <img src="https://via.placeholder.com/120?text=Jogo+2" alt="Jogo 2">
+      <h3>Quiz de Perguntas</h3>
+      <p>Desafie seu conhecimento com perguntas variadas.</p>
+    </div>
+    <div class="game-card">
+      <img src="https://via.placeholder.com/120?text=Jogo+3" alt="Jogo 3">
+      <h3>Puzzle Deslizante</h3>
+      <p>Monte a imagem deslizando as peças no menor tempo possível.</p>
+    </div>
+    <!-- Adicione mais jogos aqui -->
+  </section>
+  <footer>
+    &copy; 2025 Royal Games. Todos os direitos reservados.
+  </footer>
+</body>
+</html>
