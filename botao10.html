@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo do Botão Vermelho</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+      transition: background-color 1s ease-in-out;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #score {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #button {
+      width: 150px;
+      height: 60px;
+      background-color: red;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+
+    #button:active {
+      transform: scale(0.95);
+    }
+
+    /* Efeito de brilho */
+    .glow {
+      box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.6);
+      animation: glow-animation 1s infinite alternate;
+    }
+
+    @keyframes glow-animation {
+      0% {
+        box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.6);
+      }
+      100% {
+        box-shadow: 0 0 40px 20px rgba(255, 0, 0, 0.9);
+      }
+    }
+
+    /* Partículas */
+    .particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #ff4500;
+      border-radius: 50%;
+      animation: particle-animation 1s forwards;
+    }
+
+    @keyframes particle-animation {
+      0% {
+        transform: translate(0, 0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(100px, -100px);
+        opacity: 0;
+      }
+    }
+
+    /* Botões */
+    #buyDoubleClick, #buyAutoClick, #buyCorruptedClick, #buyZeroClicks {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #buyDoubleClick:disabled, #buyAutoClick:disabled, #buyCorruptedClick:disabled, #buyZeroClicks:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Mensagem de limite de compras */
+    #message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: red;
+      display: none;
+    }
+
+    /* Efeito de bug no modo terror */
+    .bugged {
+      animation: buggedEffect 0.1s steps(3, start) infinite;
+      filter: contrast(200%) saturate(300%);
+    }
+
+    @keyframes buggedEffect {
+      0% {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(5deg);
+      }
+      100% {
+        transform: rotate(-5deg);
+      }
+    }
+
+    /* Mensagem de terror no canto */
+    #terrorMessage {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      color: red;
+      font-size: 24px;
+      font-weight: bold;
+      display: none;
+      animation: terrorEffect 1s infinite alternate;
+    }
+
+    @keyframes terrorEffect {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* Pop-up */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    #popup button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* Quadrados pretos na tela */
+    .black-square {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: black;
+      z-index: 5;
+    }
+
+    /* Tela preta */
+    .blackout {
+      background-color: black;
+      color: white;
+    }
+
+    /* Mensagem de terror no modo blackout */
+    #blackoutMessage {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 36px;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jogo do Botão Vermelho</h1>
+  <div id="score">Pontuação: 0</div>
+  <button id="button">Clique aqui</button>
+  <button id="buyDoubleClick" disabled>Comprar Clique Duplo (50 pontos)</button>
+  <button id="buyAutoClick" disabled>Comprar Clique Automático (100 pontos)</button>
+  <button id="buyCorruptedClick" disabled>Comprar Clique ??? (1000 pontos)</button>
+  <button id="buyZeroClicks" disabled>Comprar Clique Zero (1000 pontos)</button>
+  <div id="message">Você só pode comprar o Clique Automático 4 vezes!</div>
+  <div id="terrorMessage">Eu posso te ver...</div>
+
+  <!-- Pop-up de erro -->
+  <div id="popup">
+    <p>O código foi corrompido!</p>
+    <button id="okButton">Ok</button>
+  </div>
+
+  <!-- Mensagem de terror quando a tela fica preta -->
+  <div id="blackoutMessage">Não olhe para trás...</div>
+
+  <script>
+    let score = 0;
+    let doubleClickEnabled = false;
+    let autoClickRate = 1;
+    let autoClickInterval = null;
+    let autoClicksBought = 0;
+    let isInTerrorMode = false;
+    let isInBlackoutMode = false;
+    const scoreElement = document.getElementById('score');
+    const button = document.getElementById('button');
+    const buyDoubleClickButton = document.getElementById('buyDoubleClick');
+    const buyAutoClickButton = document.getElementById('buyAutoClick');
+    const buyCorruptedClickButton = document.getElementById('buyCorruptedClick');
+    const buyZeroClicksButton = document.getElementById('buyZeroClicks');
+    const body = document.body;
+    const message = document.getElementById('message');
+    const terrorMessage = document.getElementById('terrorMessage');
+    const popup = document.getElementById('popup');
+    const okButton = document.getElementById('okButton');
+    const blackoutMessage = document.getElementById('blackoutMessage');
+
+    function updateScore() {
+      score += doubleClickEnabled ? 2 : 1;
+      scoreElement.textContent = `Pontuação: ${score}`;
+
+      if (score % 10 === 0) {
+        triggerSpecialEffect();
+      }
+
+      if (score >= 50) {
+        buyDoubleClickButton.disabled = false;
+      }
+
+      if (score >= 100) {
+        buyAutoClickButton.disabled = false;
+      }
+
+      if (score >= 1000) {
+        buyCorruptedClickButton.disabled = false;
+        buyZeroClicksButton.disabled = false;
+      }
+    }
+
+    function enableDoubleClick() {
+      if (score >= 50) {
+        score -= 50;
+        doubleClickEnabled = true;
+        buyDoubleClickButton.disabled = true;
+      }
+    }
+
+    function enableAutoClick() {
+      if (score >= 100 && autoClicksBought < 4) {
+        score -= 100;
+        autoClickRate *= 2;
+        autoClicksBought++;
+
+        if (autoClicksBought === 4) {
+          buyAutoClickButton.disabled = true;
+          message.style.display = 'block';
+        }
+
+        if (autoClickInterval === null) {
+          autoClickInterval = setInterval(() => {
+            score += autoClickRate;
+            scoreElement.textContent = `Pontuação: ${score}`;
+          }, 1000);
+        }
+
+        buyAutoClickButton.disabled = true;
+      }
+    }
+
+    function enableCorruptedClick() {
+      if (score >= 1000) {
+        score -= 1000;
+        showPopup();
+      }
+    }
+
+    function showPopup() {
+      popup.style.display = 'block';
+    }
+
+    function enterTerrorMode() {
+      isInTerrorMode = true;
+      body.classList.add('bugged');
+      terrorMessage.style.display = 'block';
+      spawnBlackSquares(); // Spawn squares to simulate the bug
+    }
+
+    function spawnBlackSquares() {
+      for (let i = 0; i < 20; i++) {
+        const square = document.createElement('div');
+        square.classList.add('black-square');
+        square.style.left = `${Math.random() * 100}vw`;
+        square.style.top = `${Math.random() * 100}vh`;
+        body.appendChild(square);
+      }
+    }
+
+    okButton.addEventListener('click', () => {
+      popup.style.display = 'none';
+      enterTerrorMode();
+    });
+
+    button.addEventListener('click', () => {
+      updateScore();
+    });
+
+    buyDoubleClickButton.addEventListener('click', enableDoubleClick);
+    buyAutoClickButton.addEventListener('click', enableAutoClick);
+    buyCorruptedClickButton.addEventListener('click', enableCorruptedClick);
+
+    // Novo botão de 0 cliques
+    buyZeroClicksButton.addEventListener('click', () => {
+      blackoutMode();
+    });
+
+    // Ativa o modo de blackout
+    function blackoutMode() {
+      isInBlackoutMode = true;
+      blackoutMessage.style.display = 'block';
+
+      setTimeout(() => {
+        blackoutMessage.style.display = 'none';
+        body.style.backgroundColor = 'black'; // Fica totalmente preto
+      }, 15000); // 15 segundos para desaparecer
+    }
+  </script>
+</body>
+</html>
