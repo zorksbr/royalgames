@@ -11,20 +11,22 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       margin: 0;
       height: 100vh;
+      padding-top: 20px;
     }
 
     .container {
       display: flex;
-      gap: 30px;
-      align-items: center;
+      gap: 40px;
+      align-items: flex-start;
       justify-content: center;
     }
 
-    .sidebar {
-      max-width: 200px;
+    #canvasContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     canvas {
@@ -33,7 +35,7 @@
 
     #score {
       font-size: 18px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     #highScore {
@@ -43,7 +45,7 @@
     }
 
     #restartBtn {
-      margin-top: 10px;
+      margin-top: 12px;
       padding: 8px 16px;
       font-size: 16px;
       background-color: #4caf50;
@@ -56,17 +58,36 @@
     #restartBtn:hover {
       background-color: #45a049;
     }
+
+    .sidebar {
+      max-width: 200px;
+    }
+
+    .sidebar h3 {
+      margin-bottom: 8px;
+    }
+
+    .sidebar ul {
+      padding-left: 20px;
+    }
+
+    .sidebar li {
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
   <h1>Jogo da Cobrinha</h1>
   <div class="container">
-    <div>
+    <!-- Parte do canvas e pontuação -->
+    <div id="canvasContainer">
       <canvas id="game" width="400" height="400"></canvas>
       <div id="score">Pontuação: 0</div>
       <div id="highScore">Recorde: 0</div>
       <button id="restartBtn">Reiniciar (R)</button>
     </div>
+
+    <!-- Parte lateral dos controles -->
     <div class="sidebar">
       <h3>Controles</h3>
       <ul>
@@ -133,7 +154,7 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Desenhar borda
+      // Borda verde
       ctx.strokeStyle = "#4caf50";
       ctx.lineWidth = 2;
       ctx.strokeRect(0, 0, canvas.width, canvas.height);
@@ -148,7 +169,6 @@
         ctx.fillRect(segment.x, segment.y, box, box);
       });
 
-      // Movimento
       let head = { ...snake[0] };
       if (direction === "up") head.y -= box;
       if (direction === "down") head.y += box;
@@ -160,16 +180,16 @@
         head.x < 0 || head.x >= canvas.width ||
         head.y < 0 || head.y >= canvas.height
       ) {
-        gameOverSound.play();
         gameOver = true;
+        gameOverSound.play();
         updateHighScore();
         return;
       }
 
       // Colisão com corpo
       if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-        gameOverSound.play();
         gameOver = true;
+        gameOverSound.play();
         updateHighScore();
         return;
       }
