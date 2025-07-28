@@ -88,17 +88,7 @@
       resetGame();
     });
 
-    function // Colisão com a borda interna (dentro da moldura verde)
-if (
-  head.x < 0 || head.x >= canvas.width ||
-  head.y < 0 || head.y >= canvas.height
-) {
-  gameOver = true;
-  gameOverSound.play();
-  restartBtn.style.display = "inline-block";
-  return;
-}
- {
+    function draw() {
       if (gameOver) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
