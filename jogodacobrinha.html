@@ -18,7 +18,6 @@
 
     canvas {
       background: #222;
-      border: 2px solid #4caf50;
     }
 
     #score {
@@ -64,17 +63,19 @@
     function resetGame() {
       snake = [{ x: 200, y: 200 }];
       direction = "right";
-      food = {
-        x: Math.floor(Math.random() * 20) * box,
-        y: Math.floor(Math.random() * 20) * box
-      };
+      food = generateFood();
       gameOver = false;
       score = 0;
       scoreDisplay.textContent = "Pontuação: 0";
       restartBtn.style.display = "none";
     }
 
-    resetGame();
+    function generateFood() {
+      return {
+        x: Math.floor(Math.random() * (canvas.width / box)) * box,
+        y: Math.floor(Math.random() * (canvas.height / box)) * box
+      };
+    }
 
     document.addEventListener("keydown", (e) => {
       const key = e.key.toLowerCase();
@@ -93,6 +94,11 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Desenhar borda verde interna
+      ctx.strokeStyle = "#4caf50";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
       // Desenhar comida
       ctx.fillStyle = "red";
       ctx.fillRect(food.x, food.y, box, box);
@@ -110,12 +116,19 @@
       if (direction === "left") head.x -= box;
       if (direction === "right") head.x += box;
 
-      // Colisão
+      // Colisão com bordas visíveis (borda verde)
       if (
         head.x < 0 || head.x >= canvas.width ||
-        head.y < 0 || head.y >= canvas.height ||
-        snake.some(segment => segment.x === head.x && segment.y === head.y)
+        head.y < 0 || head.y >= canvas.height
       ) {
+        gameOver = true;
+        gameOverSound.play();
+        restartBtn.style.display = "inline-block";
+        return;
+      }
+
+      // Colisão com o próprio corpo
+      if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
         gameOver = true;
         gameOverSound.play();
         restartBtn.style.display = "inline-block";
@@ -124,20 +137,19 @@
 
       snake.unshift(head);
 
-      // Comer
+      // Comer comida
       if (head.x === food.x && head.y === food.y) {
         eatSound.play();
         score++;
         scoreDisplay.textContent = "Pontuação: " + score;
-        food = {
-          x: Math.floor(Math.random() * 20) * box,
-          y: Math.floor(Math.random() * 20) * box
-        };
+        food = generateFood();
       } else {
         snake.pop();
       }
     }
 
+    // Inicia o jogo
+    resetGame();
     setInterval(draw, 100);
   </script>
 </body>
