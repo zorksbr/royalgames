@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -56,6 +55,9 @@
       box-shadow: 0 4px 18px rgba(0,0,0,0.2);
       text-align: center;
       transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .game-card:hover {
       transform: scale(1.05);
@@ -76,6 +78,24 @@
     .game-card p {
       font-size: 0.95em;
       color: #bfc6e0;
+    }
+    .play-btn {
+      margin-top: 10px;
+      padding: 10px 25px;
+      background: #00c3ff;
+      color: #181c2f;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .play-btn:hover {
+      background: #23284a;
+      color: #00c3ff;
     }
     footer {
       margin-top: 30px;
@@ -102,18 +122,27 @@
       <img src="https://via.placeholder.com/120?text=Jogo+1" alt="Jogo 1">
       <h3>Jogo da Memória</h3>
       <p>Teste sua memória encontrando os pares de cartas!</p>
+      <a class="play-btn" href="jogo1.html">Jogar</a>
     </div>
     <div class="game-card">
       <img src="https://via.placeholder.com/120?text=Jogo+2" alt="Jogo 2">
       <h3>Quiz de Perguntas</h3>
       <p>Desafie seu conhecimento com perguntas variadas.</p>
+      <a class="play-btn" href="jogo2.html">Jogar</a>
     </div>
     <div class="game-card">
       <img src="https://via.placeholder.com/120?text=Jogo+3" alt="Jogo 3">
       <h3>Puzzle Deslizante</h3>
       <p>Monte a imagem deslizando as peças no menor tempo possível.</p>
+      <a class="play-btn" href="jogo3.html">Jogar</a>
     </div>
-    <!-- Adicione mais jogos aqui -->
+    <div class="game-card">
+      <img src="https://via.placeholder.com/120?text=Jogo+4" alt="Jogo 4">
+      <h3>Jogo do Botão</h3>
+      <p>Clique no botão o máximo de vezes que conseguir!</p>
+      <a class="play-btn" href="botao10.html">Jogar</a>
+    </div>
+    <!-- Adicione mais jogos aqui, basta criar novos arquivos HTML e ajustar os links -->
   </section>
   <footer>
     &copy; 2025 Royal Games. Todos os direitos reservados.
